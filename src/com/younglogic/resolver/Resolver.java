@@ -7,13 +7,14 @@ import java.lang.InstantiationError;
 public class Resolver {
 
 	@SuppressWarnings("rawtypes")
-	static Map<Class, Factory> factories = new HashMap<Class, Factory>();
-	@SuppressWarnings("rawtypes")
-	static Map<Class, Object> instances = new HashMap<Class, Object>();
+	Map<Class, Object> instances = new HashMap<Class, Object>();
 
-	static <T> void Register(Class<T> c, Factory<T> f) {
-		factories.put(c, f);
-	};
+	private Registry registry;
+
+	Resolver(Registry registry) {
+		super();
+		this.registry = registry;
+	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Object> T fetch(@SuppressWarnings("rawtypes") Class c) throws InstantiationError {
@@ -22,7 +23,7 @@ public class Resolver {
 			// Don't synchronize for the fast path, only the
 			// slow path where we need to create a new object.
 
-			Factory<T> factory = factories.get(c);
+			Factory<T> factory = registry.factories.get(c);
 			if (factory == null) {
 				throw new InstantiationError();
 			}

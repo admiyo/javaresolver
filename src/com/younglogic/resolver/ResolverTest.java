@@ -18,29 +18,32 @@ class ResolverTest {
 
 	@Test
 	void test() {
-		Resolver.Register(MessageSource.class, new Factory<MessageSource>() {
+		
+		Registry registry = new Registry();
+		Resolver resolver = registry.createResolver();
+		
+		registry.register(MessageSource.class, new Factory<MessageSource>() {
 			@Override
 			public ConcreteMessageSource create(Resolver registry) {
 				return new ConcreteMessageSource();
 			}
 		});
 		
-		Resolver.Register(MessageSink.class, new Factory<MessageSink>() {
+		registry.register(MessageSink.class, new Factory<MessageSink>() {
 			@Override
 			public ConcreteMessageSink create(Resolver registry) {
 				return new ConcreteMessageSink();
 			}
 		});
 
-		Resolver.Register(MessagePump.class, new Factory<MessagePump>() {
+		registry.register(MessagePump.class, new Factory<MessagePump>() {
 			@Override
 			public MessagePump create(Resolver registry) {
 				return new ConcreteMessagePump(registry.fetch(MessageSource.class), registry.fetch(MessageSink.class) );
 			}
 		});
 
-		Resolver registry = new Resolver();
-		MessagePump messagePump = registry.fetch(MessagePump.class);
+		MessagePump messagePump = resolver.fetch(MessagePump.class);
 		
 		ConcreteMessagePump pump = (ConcreteMessagePump)messagePump;
 		ConcreteMessageSource source = (ConcreteMessageSource)pump.source;
