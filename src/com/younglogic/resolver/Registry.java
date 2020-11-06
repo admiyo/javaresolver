@@ -8,8 +8,8 @@ public class Registry {
 	@SuppressWarnings("rawtypes")
 	Map<Class, Factory> factories = new HashMap<Class, Factory>();
 
-	public Resolver createResolver() {
-		return new Resolver(this);
+	public Resolver createResolver(Resolver parent) {
+		return new Resolver(this, parent);
 	}
 
 	<T> void register(Class<T> c, Factory<T> f) {

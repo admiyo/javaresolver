@@ -10,10 +10,12 @@ public class Resolver {
 	Map<Class, Object> instances = new HashMap<Class, Object>();
 
 	private Registry registry;
+	private Resolver parent;
 
-	Resolver(Registry registry) {
+	Resolver(Registry registry, Resolver parent) {
 		super();
 		this.registry = registry;
+		this.parent = parent;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -25,7 +27,10 @@ public class Resolver {
 
 			Factory<T> factory = registry.factories.get(c);
 			if (factory == null) {
-				throw new InstantiationError();
+				if (parent == null){
+					throw new InstantiationError();
+				}
+				return parent.fetch(c);
 			}
 			synchronized (instances) {
 				if (instances.get(c) == null) {
