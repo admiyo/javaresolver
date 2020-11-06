@@ -3,8 +3,8 @@ package com.younglogic.resolver.samples;
 import javax.jms.InvalidSelectorException;
 
 public class ConcreteMessagePump implements MessagePump {
-	private MessageSource source;
-	private MessageSink sink;
+	public MessageSource source;
+	public MessageSink sink;
 
 	public ConcreteMessagePump(MessageSource source, MessageSink sink) {
 		super();

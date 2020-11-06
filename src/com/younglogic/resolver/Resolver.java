@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.lang.InstantiationError;
 
-public class Registry {
+public class Resolver {
 
 	@SuppressWarnings("rawtypes")
 	static Map<Class, Factory> factories = new HashMap<Class, Factory>();

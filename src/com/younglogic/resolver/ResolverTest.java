@@ -1,5 +1,8 @@
 package com.younglogic.resolver;
 
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import com.younglogic.resolver.samples.ConcreteMessageSink;
@@ -15,30 +18,42 @@ class ResolverTest {
 
 	@Test
 	void test() {
-		Registry.Register(MessageSource.class, new Factory<MessageSource>() {
+		Resolver.Register(MessageSource.class, new Factory<MessageSource>() {
 			@Override
-			public ConcreteMessageSource create(Registry registry) {
+			public ConcreteMessageSource create(Resolver registry) {
 				return new ConcreteMessageSource();
 			}
 		});
 		
-		Registry.Register(MessageSink.class, new Factory<MessageSink>() {
+		Resolver.Register(MessageSink.class, new Factory<MessageSink>() {
 			@Override
-			public ConcreteMessageSink create(Registry registry) {
+			public ConcreteMessageSink create(Resolver registry) {
 				return new ConcreteMessageSink();
 			}
 		});
 
-		Registry.Register(MessagePump.class, new Factory<MessagePump>() {
+		Resolver.Register(MessagePump.class, new Factory<MessagePump>() {
 			@Override
-			public MessagePump create(Registry registry) {
+			public MessagePump create(Resolver registry) {
 				return new ConcreteMessagePump(registry.fetch(MessageSource.class), registry.fetch(MessageSink.class) );
 			}
 		});
 
-		Registry registry = new Registry();
+		Resolver registry = new Resolver();
 		MessagePump messagePump = registry.fetch(MessagePump.class);
+		
+		ConcreteMessagePump pump = (ConcreteMessagePump)messagePump;
+		ConcreteMessageSource source = (ConcreteMessageSource)pump.source;
+		ConcreteMessageSink sink = (ConcreteMessageSink)pump.sink;
+
+		
+		assertEquals(source.sent, 0);
+		assertEquals(sink.received, 0);
+
 		messagePump.run();
+		assertEquals(source.sent, 1);
+		assertEquals(sink.received, 1);
+
 	}
 
 }

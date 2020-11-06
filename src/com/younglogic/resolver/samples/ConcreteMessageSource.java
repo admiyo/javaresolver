@@ -5,11 +5,11 @@ import javax.jms.InvalidSelectorException;
 
 public class ConcreteMessageSource implements MessageSource {
 
-	int count = 0;
+	public int sent = 0;
 
 	public Message next() throws InvalidSelectorException {
-		if (count == 0) {
-			count++;
+		if (sent == 0) {
+			sent++;
 			return new Message("header", "message");
 		} else {
 			throw new InvalidSelectorException("no message");
